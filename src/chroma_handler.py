@@ -7,6 +7,13 @@ from tqdm import tqdm
 
 
 def create_client(chroma_host: str = None, chroma_port: int = None, settings = None):
+    """
+    This function creates a chroma client instance
+    :param chroma_host: (str) The host of the chroma server optional, if None then it will create persistent client
+    :param chroma_port: (int) The port of the chroma server optional, if None then it will create persistent client
+    :param settings: (dict) The settings for the chroma client optional, if None then it will create persistent client
+    :return: (object) The chroma client instance
+    """
     if chroma_host is None or chroma_port is None:
         chroma_client = chromadb.PersistentClient()
     else:
@@ -47,7 +54,16 @@ def push_msg_to_vector_store(collection_name: str, unique_session_id, unique_mes
         return False
 
 
-def create_queries(prompt, provider, base_url, chat_mode_name, api_key = None):
+def create_queries(prompt, provider, base_url, chat_model_name, api_key = None):
+    """
+    This will create refine queries to search in vector database, this can be user for retrieving from vector database
+    :param prompt: (str) Original query / msg / prompt from user end
+    :param provider: (enum) It can be 'openai' or 'ollama'
+    :param base_url: (str) base url for the model
+    :param chat_model_name: (str) model name you want to use
+    :param api_key: (str) API key you want to use for openai model
+    :return: (list) List of refine queries
+    """
     query_msg = (
         'You are a first principle reasoning search query AI agent.'
         'Your list of search queries will be ran on an embedding database of all your conversations '
@@ -60,17 +76,17 @@ def create_queries(prompt, provider, base_url, chat_mode_name, api_key = None):
     query_convo = [
         {'role': 'system', 'content': query_msg},
         {'role': 'user',
-         'content': 'write an email to my car insurance company and create and create a pursuasive request for them to lowwer my monthly rate.'},
+         'content': 'write an email to my car insurance company and create and create a persuasive request for them to lower my monthly rate.'},
         {'role': 'assistant',
          'content': '["what is the user name?", "what is the users current auto insurance provider", "what is the monthly rate the user currently pays for auto insurance?"]'},
-        {'role': 'user', 'content': 'can you make me cum?'},
+        {'role': 'user', 'content': 'what did you told to Smith?'},
         {'role': 'assistant',
-         'content': '["what is the user name?", "why user is asking for making him cum?", "are the playing roleplay?", "what is the name?"]'},
+         'content': '["Who is smith?", "How Smith is related to user?", "Is Smith is nickname of user?", "What is assistant nickname?"]'},
         {'role': 'user', 'content': prompt}
     ]
     if provider == 'ollama':
         ollama_client = Client(host=base_url)
-        response = ollama_client.chat(model=chat_mode_name, messages=query_convo,
+        response = ollama_client.chat(model=chat_model_name, messages=query_convo,
                                       options={'num_predict': 90})
         response = response['message']['content']
     elif provider == 'openai':
@@ -80,7 +96,7 @@ def create_queries(prompt, provider, base_url, chat_mode_name, api_key = None):
         )
         response = client.chat.completions.create(
             messages=query_convo,
-            model=chat_mode_name,
+            model=chat_model_name,
         )
         response = response.choices[0].message.content
     else:
@@ -113,6 +129,16 @@ def retrieve_embeddings(collection_name: str, unique_session_id, chroma_client,
 
 def retrieve_embeddings_try_queries(queries, collection_name: str, unique_session_id, chroma_client,
                                     results_per_query = 2, embedding_model_settings = None):
+    """
+    This function is used to retrieve embeddings (memories as list of strings) from vector databas
+    :param queries: (list) list of queries
+    :param collection_name: (str) name of the collection of vector database
+    :param unique_session_id: (str) unique session id for vector database
+    :param chroma_client: (obj) chroma client object
+    :param results_per_query: (int) number of similar docs to fetch
+    :param embedding_model_settings: (dict) dictionary of embeddings models settings
+    :return: (list) list of memories as list of strings
+    """
     embeddings = list()
     vector_db_name = f'{collection_name}-{unique_session_id}'
     if embedding_model_settings['provider'] == 'ollama':
@@ -133,22 +159,35 @@ def retrieve_embeddings_try_queries(queries, collection_name: str, unique_sessio
         vector_db = chroma_client.get_or_create_collection(name=vector_db_name)
         results = vector_db.query(query_embeddings=[query_embedding], n_results=results_per_query)
         best_embeddings = results['documents'][0]
-        print(f"{len(best_embeddings)} documents fetch for 'query={query}'")
         for best in best_embeddings:
             embeddings.append(best)
+    print(f"{len(embeddings)} past conversation fetched.'")
     return embeddings
 
 
 def recall(query, collection_name, unique_session_id, chroma_client,
            query_embedding, try_queries = False, results_per_query = 2, llm_settings = None,
            embedding_model_settings = None):
-    chat_mode_name = llm_settings['model']
+    """
+    This function is used to recall memories from vector database
+    :param query: (str) original query
+    :param collection_name: (str) name of the collection of vector database
+    :param unique_session_id: (str) unique session id for vector database
+    :param chroma_client: (obj) chroma client object
+    :param query_embedding: (list) embedding of the query
+    :param try_queries: (bool) flag to use refined queries
+    :param results_per_query: (int) number of similar docs to fetch
+    :param llm_settings: (dict) dictionary of llm settings
+    :param embedding_model_settings: (dict) dictionary of embeddings models settings
+    :return: (dict) dictionary with memories
+    """
+    chat_model_name = llm_settings['model']
     api_key = llm_settings['api_key']
     provider = llm_settings['provider']
     base_url_chat_model = llm_settings['base_url']
     if try_queries:
         queries = create_queries(prompt=query, provider=provider, base_url=base_url_chat_model,
-                                 chat_mode_name=chat_mode_name, api_key=api_key)
+                                 chat_model_name=chat_model_name, api_key=api_key)
         embeddings = retrieve_embeddings_try_queries(queries, collection_name, unique_session_id, chroma_client,
                                                      results_per_query=results_per_query,
                                                      embedding_model_settings=embedding_model_settings)
