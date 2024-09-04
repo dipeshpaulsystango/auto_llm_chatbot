@@ -1,6 +1,11 @@
 from lazyme import color_print as cprint
-from llm import ollama_chat, openai_chat, run_embedding
-from chroma_handler import create_client, recall, push_msg_to_vector_store
+
+try:
+    from models import ollama_chat, openai_chat, run_embedding
+    from chroma_handler import create_client, recall, push_msg_to_vector_store
+except:
+    from auto_llm_chatbot.models import ollama_chat, openai_chat, run_embedding
+    from auto_llm_chatbot.chroma_handler import create_client, recall, push_msg_to_vector_store
 
 
 def chat(query, system_message,
