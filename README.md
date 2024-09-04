@@ -30,6 +30,7 @@ This package is for using LLM in Chatbot applications with automatic chat histor
 ```
 from auto_llm_chatbot.chatbot import chat
 
+
 llm_settings = {
     "provider": 'ollama',
     "base_url": 'http://localhost:11434',
@@ -74,7 +75,7 @@ buffer_window_chats = [
     {'role': 'user', 'content': 'what is 7*5?'},
     {'role': 'assistant', 'content': '35'},
 ]
-query = "who is PM of India?"
+query = "Who is PM of India?"
 response = chat(query=query, system_message=system_message,
                 llm_settings=llm_settings,
                 chroma_settings=chroma_settings,
