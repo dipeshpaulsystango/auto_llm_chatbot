@@ -1,29 +1,34 @@
 # Auto LLM Chatbot
 
-This package is for using LLM in Chatbot applications with automatic chat history management using vector db (chroma db) on you local machine.
+Auto LLM Chatbot is a Python package designed to simplify the development of chatbot applications that use Large Language Models (LLMs). It offers automatic chat history management using a local vector database (ChromaDB), ensuring efficient context retrieval for ongoing conversations.
 
-# Why Auto LLM Chatbot
+# Install
 
-1. No need to worry about a hundred or thousands of lines of code to just manage very old chat history as context for ongoing conversations.
-2. Easily you can build chatbot in few lines, see below example.
-3. Fully customizable, you have control over your data, your chats.
-4. Easily you can integrate with any framework or existing code you are using.
+```
+pip install auto-llm-chatbot
+```
 
-## Features-
+## Why Choose Auto LLM Chatbot?
+1. Effortless History Management: No need to manage extensive chat history manually; the package automatically handles it.
+2. Simple Integration: Build a chatbot with just a few lines of code.
+3. Full Customization: Maintain complete control over your data and conversations.
+4. Framework Compatibility: Easily integrate with any existing framework or codebase.
 
-1. Build chatbot easily
-2. No need to worry about chat history management.
 
+## Key Features
+1. Easy Chatbot Creation: Set up a chatbot with minimal code.
+2. Automated History Management: Automatically stores and fetches chat history for context-aware conversations.
 
-## How this works-
+## How It Works
+1. Project Setup: Create a basic project structure.
+2. Automatic Storage: Auto LLM Chatbot stores your conversations (user inputs and AI outputs) in Chroma DB.
+3. Contextual Conversations: The chatbot fetches relevant chat history whenever you engage with the LLM.
 
-1. You just need to create skeleton of project.
-2. Auto LLM Chatbot will store your conversation (user input and ai's output) automatically in (vector db) chroma db, and everytime it will automatically fetch chat history whenever you chat with llm next time.
 
 ## Prerequisites-
 
-1. Python
-2. Knowledge of GenAI
+1. Python: Ensure Python is installed on your system.
+2. GenAI Knowledge: Familiarity with Generative AI models.
 
 ## Example Usage-
 
@@ -139,7 +144,7 @@ For the latest developments or specific policies, it is recommended to consult c
 
 ## Understand Settings Parameters-
 
-- llm_settings
+- **llm_settings-**
   - provider: can be `openai` or `ollama` only for now.
   - base_url: base url of provider
   - model: name of model
@@ -165,7 +170,7 @@ For the latest developments or specific policies, it is recommended to consult c
     }
     ```
     
-- embedding_model_settings
+- **embedding_model_settings-**
   - provider: can be `openai` or `ollama` only for now.
   - base_url: base url of provider
   - model: name of model
@@ -190,7 +195,7 @@ For the latest developments or specific policies, it is recommended to consult c
     ```
 
 
-- embedding_model_settings
+- **embedding_model_settings-**
   - host: host url of chromadb
   - port: port of chromadb
   - settings: chromadb settings, including authentication. Read chromadb documentation.
@@ -202,7 +207,7 @@ For the latest developments or specific policies, it is recommended to consult c
       }
     ```
     
-- memory_settings-
+- **memory_settings-**
   - try_queries: It means, assistant will refine your query to search for similar embeddings in chromadb.
   
     Example: Your input is 'My name is Dipesh'
@@ -234,13 +239,14 @@ For the latest developments or specific policies, it is recommended to consult c
 
 ## FAQs-
 
-1. Can I customize LLM endpoints
-    - Yes you can use any OpenAI compatible endpoints.
+1. Can I customize LLM endpoints / Groq or other models?
+    - Yes, any OpenAI-compatible endpoints and models can be used.
 
 2. Can I use custom hosted chromadb
-    - Yes you can use custom endpoints for chromadb, if not provided then it will create chroma dir in your root folder of project.
+    - Yes, you can specify custom endpoints for Chroma DB. If not provided, a Chroma directory will be created in your project's root folder.
 
 3. I don't want to manage history. Just wanted to chat.
-    - Yes you can, just set `memory=False`
+    - Yes, set `memory=False` to disable history management and chat directly.
  
-4. Any doubts or suggestions please raise issue or connect me at `dipesh.paul@systango.com`
+4. Need help or have suggestions?
+    - Raise an issue or contact me at dipesh.paul@systango.com
