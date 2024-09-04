@@ -23,7 +23,6 @@ setup(
         "Programming Language :: Python :: 3.10",
         "License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent",
-        "Topic :: LLM"
     ],
     package_dir={"": "auto_llm_chatbot"},
     packages=setuptools.find_packages(where="auto_llm_chatbot"),
