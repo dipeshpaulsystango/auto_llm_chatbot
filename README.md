@@ -1,6 +1,6 @@
 # Auto LLM Chatbot
 
-Auto LLM Chatbot is a Python package designed to simplify the development of chatbot applications that use Large Language Models (LLMs). It offers automatic chat history management using a local vector database (ChromaDB), ensuring efficient context retrieval for ongoing conversations.
+⚡ Auto LLM Chatbot is a Python package designed to simplify the development of chatbot applications that use Large Language Models (LLMs). It offers automatic chat history management using a local vector database (ChromaDB), ensuring efficient context retrieval for ongoing conversations.
 
 # Install
 
@@ -195,7 +195,7 @@ For the latest developments or specific policies, it is recommended to consult c
     ```
 
 
-- **embedding_model_settings-**
+- **chroma_settings-**
   - host: host url of chromadb
   - port: port of chromadb
   - settings: chromadb settings, including authentication. Read chromadb documentation.
